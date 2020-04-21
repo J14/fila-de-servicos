@@ -57,3 +57,10 @@ class Queue(models.Model):
                     "there can not be two attending person"
                     " in the same queue"
                 )
+
+    def save(self, *args, **kwargs):
+        if not self.attending:
+            if not Queue.enqueue.filter(service=self.service).exists():
+                self.attending = True
+
+        super().save(*args, **kwargs)
