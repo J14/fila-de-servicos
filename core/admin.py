@@ -14,7 +14,7 @@ class ServiceAdmin(admin.ModelAdmin):
 
     def attendance(self, request, queryset):
         for service in queryset:
-            att = service.queue.first()
+            att = service.queue.filter(attending=True).first()
 
             if att is not None:
                 att.attending = False
