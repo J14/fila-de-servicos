@@ -18,3 +18,5 @@ class QueueForm(forms.ModelForm):
                 "There can not be attending"
                 " and attended at the same time"
             )
+
+        return cleaned_data
