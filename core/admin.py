@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 
 from . import models
 from . import forms
@@ -15,14 +15,26 @@ class ServiceAdmin(admin.ModelAdmin):
     def attendance(self, request, queryset):
         for service in queryset:
             att = service.queue.first()
-            att.attending = False
-            att.attended = True
-            att.save()
 
-            att = service.queue.first()
             if att is not None:
-                att.attending = True
+                att.attending = False
+                att.attended = True
                 att.save()
+                self.message_user(
+                    request,
+                    "Person attended in queue {}".format(service)
+                )
+
+                att = service.queue.first()
+                if att is not None:
+                    att.attending = True
+                    att.save()
+            else:
+                self.message_user(
+                    request,
+                    "Nobody waiting in queue {}".format(service),
+                    level=messages.WARNING
+                )
 
 
 admin.site.register(models.Person)
